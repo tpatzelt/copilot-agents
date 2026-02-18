@@ -21,8 +21,5 @@ dev = [
 [project.scripts]
 invaders = "invaders.__main__:main"
 
-[tool.setuptools]
-package-dir = { "" = "" }
-
 [tool.setuptools.packages.find]
 where = ["invaders"]

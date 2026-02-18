@@ -2,7 +2,7 @@
 from typing import List
 import pygame
 
-from ..config import PLAYER_SPEED, PLAYER_WIDTH, PLAYER_HEIGHT, BULLET_SPEED
+from ..config import PLAYER_SPEED, PLAYER_WIDTH, PLAYER_HEIGHT, BULLET_SPEED, WIDTH
 from .bullet import Bullet
 
 
@@ -28,8 +28,8 @@ class Player:
         # keep inside screen
         if self.x < self.w / 2:
             self.x = self.w / 2
-        if self.x > 800 - self.w / 2:
-            self.x = 800 - self.w / 2
+        if self.x > WIDTH - self.w / 2:
+            self.x = WIDTH - self.w / 2
 
         if keys[pygame.K_SPACE]:
             if self._timer <= 0:

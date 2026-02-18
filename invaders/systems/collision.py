@@ -4,16 +4,18 @@ Functions here accept either pygame.Rect-like tuples (x, y, w, h)
 or pygame.Rect objects.
 """
 from typing import Tuple
+import pygame
 
 
 def _to_rect(t):
-    # if it's a pygame.Rect-like object
+    # handle pygame.Rect explicitly
     try:
-        if hasattr(t, "x") and hasattr(t, "y") and hasattr(t, "w"):
-            return (t.x, t.y, t.w, t.h)
+        if isinstance(t, pygame.Rect):
+            return (t.x, t.y, t.width, t.height)
     except Exception:
         pass
-    # assume tuple (x,y,w,h)
+
+    # also accept tuple-like (x, y, w, h)
     return t
 
 

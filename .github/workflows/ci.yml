@@ -35,7 +35,10 @@ jobs:
           pip install .[dev]
       - name: Build single-file executable with PyInstaller
         run: |
-          python -m PyInstaller --onefile --name space-invaders invaders/__main__.py
+          # include assets directory so bundled exe can access images/sfx
+          python -m PyInstaller --onefile --name space-invaders \
+            --add-data "invaders/assets:invaders/assets" \
+            invaders/__main__.py
       - name: Upload release artifact
         uses: actions/upload-artifact@v4
         with:

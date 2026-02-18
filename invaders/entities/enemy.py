@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from typing import List
 import pygame
 
-from ..config import ENEMY_ROWS, ENEMY_COLS, ENEMY_WIDTH, ENEMY_HEIGHT, ENEMY_H_SPACING, ENEMY_V_SPACING
+from ..config import ENEMY_ROWS, ENEMY_COLS, ENEMY_WIDTH, ENEMY_HEIGHT, ENEMY_H_SPACING, ENEMY_V_SPACING, WIDTH
 
 
 @dataclass
@@ -40,12 +40,14 @@ class EnemyGrid:
         for e in self.enemies:
             e.x += dx
 
-        # simple bound check
-        if any(e.x > 760 for e in self.enemies):
+        # simple bound check using configured WIDTH
+        right_limit = WIDTH - 40
+        left_limit = 40
+        if any(e.x > right_limit for e in self.enemies):
             self.dir = -1
             for e in self.enemies:
                 e.y += 10
-        if any(e.x < 40 for e in self.enemies):
+        if any(e.x < left_limit for e in self.enemies):
             self.dir = 1
             for e in self.enemies:
                 e.y += 10

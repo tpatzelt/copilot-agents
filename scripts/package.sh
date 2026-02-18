@@ -8,8 +8,10 @@ if ! command -v pyinstaller >/dev/null 2>&1; then
 fi
 
 # Example: create a one-file executable (may require tuning on Windows/macOS)
-pyinstaller --onefile --name space-invaders -c -F -n space-invaders -i '' -y \
+# Add data from invaders/assets into the packaged executable. On Windows the
+# --add-data syntax is different; this script assumes Linux/macOS style.
+pyinstaller --onefile --name space-invaders \
   --add-data "invaders/assets:invaders/assets" \
-  -p . -m invaders
+  invaders/__main__.py
 
 echo "Done. Check the dist/ directory for the executable."
