@@ -23,4 +23,4 @@ dev = [
 invaders = "invaders.__main__:main"
 
 [tool.setuptools.packages.find]
-where = ["invaders"]
+where = [""]
