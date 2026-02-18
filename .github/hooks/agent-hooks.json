@@ -1,0 +1,32 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "type": "command",
+        "command": "python3 scripts/hooks/session_context.py",
+        "timeoutSec": 10
+      }
+    ],
+    "PreToolUse": [
+      {
+        "type": "command",
+        "command": "python3 scripts/hooks/pre_tool_guard.py",
+        "timeoutSec": 15
+      }
+    ],
+    "PostToolUse": [
+      {
+        "type": "command",
+        "command": "python3 scripts/hooks/post_tool_log.py",
+        "timeoutSec": 15
+      }
+    ],
+    "Stop": [
+      {
+        "type": "command",
+        "command": "python3 scripts/hooks/session_summary.py",
+        "timeoutSec": 10
+      }
+    ]
+  }
+}
