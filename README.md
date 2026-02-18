@@ -1,3 +1,49 @@
+# Space Invaders (minimal prototype)
+
+This workspace contains a minimal Space Invaders-style game written in Python using `pygame`.
+
+Run the game (using `uv` to manage the virtual environment):
+
+```bash
+# install uv (one-time)
+pip install uv
+
+# create and activate an environment in the project directory
+uv create
+uv activate
+
+# install runtime deps from pyproject
+pip install .
+
+# run the game
+python -m invaders
+```
+
+Run tests (inside the `uv` environment):
+
+```bash
+uv activate
+pip install .[dev]
+pytest -q
+```
+
+Packaging
+---------
+
+To create a single-file executable with PyInstaller (example):
+
+```bash
+pip install pyinstaller
+pyinstaller -F -n space-invaders -c -p . --add-data "invaders/assets:invaders/assets" -w python -m invaders
+```
+
+Alternatively build a wheel:
+
+```bash
+pip install build
+python -m build
+```
+
 # Copilot Agents Showcase
 
 Showcase repository for GitHub Copilot agent capabilities in VS Code. This repo
