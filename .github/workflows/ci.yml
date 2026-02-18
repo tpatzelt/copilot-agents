@@ -19,28 +19,4 @@ jobs:
       - name: Run tests
         run: pytest -q
 
-  release:
-    if: startsWith(github.ref, 'refs/tags/')
-    runs-on: ubuntu-latest
-    needs: test
-    steps:
-      - uses: actions/checkout@v4
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-      - name: Install build deps
-        run: |
-          python -m pip install --upgrade pip
-          pip install .[dev]
-      - name: Build single-file executable with PyInstaller
-        run: |
-          # include assets directory so bundled exe can access images/sfx
-          python -m PyInstaller --onefile --name space-invaders \
-            --add-data "invaders/assets:invaders/assets" \
-            invaders/__main__.py
-      - name: Upload release artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: space-invaders-${{ github.ref_name }}
-          path: dist/space-invaders*
+  # release job moved to a dedicated workflow triggered on tag pushes

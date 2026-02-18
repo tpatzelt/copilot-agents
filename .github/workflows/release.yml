@@ -1,0 +1,81 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  build-release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - name: Install build deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install .[dev]
+          # install Pillow so CI can rasterize placeholder SVGs to PNG
+          pip install Pillow
+      - name: Generate raster assets and sounds
+        run: |
+          mkdir -p invaders/assets
+          python - <<'PY'
+import wave, struct, math
+from pathlib import Path
+from PIL import Image, ImageDraw
+
+ASSET_DIR = Path('invaders/assets')
+
+# create player.png
+img = Image.new('RGBA', (64,64), (0,0,0,0))
+draw = ImageDraw.Draw(img)
+draw.polygon([(32,10),(18,44),(46,44)], fill=(33,150,243))
+draw.rectangle([14,44,50,52], fill=(100,181,255))
+img.save(ASSET_DIR / 'player.png')
+
+# create enemy.png
+img = Image.new('RGBA', (64,64), (0,0,0,0))
+draw = ImageDraw.Draw(img)
+draw.rounded_rectangle([10,18,54,46], radius=6, fill=(229,115,115))
+draw.ellipse([18,26,26,34], fill=(255,235,238))
+draw.ellipse([38,26,46,34], fill=(255,235,238))
+img.save(ASSET_DIR / 'enemy.png')
+
+# create bullet.png
+img = Image.new('RGBA', (16,24), (0,0,0,0))
+draw = ImageDraw.Draw(img)
+draw.rectangle([6,2,10,18], fill=(255,245,157))
+draw.ellipse([4,18,12,26], fill=(255,213,79))
+img.save(ASSET_DIR / 'bullet.png')
+
+# generate simple WAV sound (sine burst)
+def make_wav(path, freq, duration=0.12, volume=0.3, rate=22050):
+    n_samples = int(rate * duration)
+    with wave.open(str(path), 'w') as wf:
+        wf.setnchannels(1)
+        wf.setsampwidth(2)
+        wf.setframerate(rate)
+        for i in range(n_samples):
+            t = i / rate
+            sample = int(volume * 32767.0 * math.sin(2*math.pi*freq*t))
+            wf.writeframes(struct.pack('<h', sample))
+
+make_wav(ASSET_DIR / 'shoot.wav', 1200)
+make_wav(ASSET_DIR / 'explosion.wav', 220)
+PY
+      - name: Build single-file executable with PyInstaller
+        run: |
+          # ensure assets path exists so PyInstaller --add-data doesn't fail
+          mkdir -p invaders/assets
+          python -m PyInstaller --onefile --name space-invaders \
+            --add-data "invaders/assets:invaders/assets" \
+            invaders/__main__.py
+      - name: Upload release artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: space-invaders-${{ github.ref_name }}
+          path: dist/space-invaders*
