@@ -9,8 +9,9 @@ description = "Minimal Space Invaders clone in Python (pygame)"
 authors = [ { name = "You" } ]
 requires-python = ">=3.10"
 
-[project.dependencies]
-pygame = ">=2.1"
+dependencies = [
+	"pygame>=2.1",
+]
 
 [project.optional-dependencies]
 dev = [
